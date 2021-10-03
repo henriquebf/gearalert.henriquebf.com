@@ -4,6 +4,7 @@ import Account from '@/models/Account';
 import Gear from '@/models/Gear';
 import postOAuthToken from 'services/strava/postOAuthToken';
 import getAthlete from '@/services/strava/getAthlete';
+import { generateGearFromAthlete } from '@/helpers/gearHelper';
 
 export default withSession(async (req, res) => {
   try {
@@ -11,7 +12,7 @@ export default withSession(async (req, res) => {
       throw new Error('oauth: code not provided!');
     }
 
-    const data = await postOAuthToken(req.query.code);
+    const data = await postOAuthToken(req.query.code, 'authorization_code');
     if (!data?.athlete?.id) {
       throw new Error('oauth: invalid token response!');
     }
@@ -47,18 +48,8 @@ export default withSession(async (req, res) => {
     }
 
     // Update Gear data
-    const { bikes } = await getAthlete(account.stravaAccessToken);
-    const gears = bikes
-      .filter((bike) => !bike.retired)
-      .map((bike) => ({
-        id: bike.id,
-        accountId: account.id,
-        primary: bike.primary,
-        name: bike.name,
-        retired: bike.retired,
-        distance: bike.distance,
-        gearType: 'bike',
-      }));
+    const athlete = await getAthlete(account.stravaAccessToken);
+    const gears = generateGearFromAthlete(account.id, 'bikes', athlete.bikes);
     const gearIds = gears.map((gear) => gear.id);
     await Gear.saveAll(gears);
     await Gear.removeByNotIds(gearIds);

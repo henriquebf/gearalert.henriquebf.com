@@ -23,15 +23,35 @@ type TokenResData = {
   athlete?: AthleteData;
 };
 
+type Body = {
+  client_id: string;
+  client_secret: string;
+  grant_type: string;
+  refresh_token?: string;
+  code?: string;
+};
+
 const postOAuthToken = async (
-  code: string
+  code: string,
+  grantType: string
 ): Promise<TokenResData | undefined> => {
-  const res: any = await axios.post(`https://www.strava.com/oauth/token`, {
+  if (!process.env.STRAVA_CLIENT_SECRET) {
+    throw new Error('postOAuthToken: STRAVA_CLIENT_SECRET not provided!');
+  }
+
+  const body: Body = {
     client_id: '71939',
     client_secret: process.env.STRAVA_CLIENT_SECRET,
-    code: code,
-    grant_type: 'authorization_code',
-  });
+    grant_type: grantType,
+  };
+
+  if (grantType === 'refresh_token') {
+    body.refresh_token = code;
+  } else {
+    body.code = code;
+  }
+
+  const res: any = await axios.post(`https://www.strava.com/oauth/token`, body);
 
   return res?.data || undefined;
 };

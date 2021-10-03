@@ -1,5 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import { verifyToken } from '@/services/strava/postPushSubscriptions';
+import postOAuthToken from 'services/strava/postOAuthToken';
+import getAthlete from '@/services/strava/getAthlete';
+import Account from '@/models/Account';
+import Gear from '@/models/Gear';
+import { generateGearFromAthlete } from '@/helpers/gearHelper';
 
 type Data =
   | {}
@@ -24,7 +29,30 @@ export default async function handler(
   }
 
   // Execute push
-  console.log(`api/push: receiving push...`, req.body);
-  // WIP
+  console.log(`api/push: receiving push for ${req.body.owner_id}...`);
+  let account = await Account.findOne({ stravaId: req.body.owner_id });
+  if (account) {
+    // Update access token
+    const data = await postOAuthToken(
+      account.stravaRefreshToken,
+      'refresh_token'
+    );
+    if (!data?.athlete?.id) {
+      throw new Error('api/push: invalid token response!');
+    }
+    account = await Account.save({
+      id: account.id,
+      stravaAccessToken: data.access_token,
+    });
+
+    // Update Gear data
+    const athlete = await getAthlete(account.stravaAccessToken);
+    const gears = generateGearFromAthlete(account.id, 'bikes', athlete.bikes);
+    const gearIds = gears.map((gear) => gear.id);
+    await Gear.saveAll(gears);
+    await Gear.removeByNotIds(gearIds);
+    console.log(`api/push: updated data for ${req.body.owner_id}.`);
+  }
+
   res.status(200).json({});
 }

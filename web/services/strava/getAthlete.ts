@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-type BikeData = {
+export type GearData = {
   id: string;
   primary: boolean;
   name: string;
@@ -8,18 +8,10 @@ type BikeData = {
   retired: boolean;
 };
 
-type ShoeData = {
-  id: string;
-  primary: boolean;
-  name: string;
-  distance: number;
-  retired: boolean;
-};
-
-type AthleteData = {
+export type AthleteData = {
   id: number;
-  bikes: BikeData[];
-  shoes: ShoeData[];
+  bikes: GearData[];
+  shoes: GearData[];
 };
 
 const getAthlete = async (accessToken: string): Promise<AthleteData> => {
