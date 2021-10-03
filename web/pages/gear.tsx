@@ -2,12 +2,12 @@ import type { NextPage } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
 import styles from '../styles/Home.module.css';
+import withSession from '@/lib/session';
+import Account, { AccountItem } from '@/models/Account';
 
-import stravaSettings from '@/services/strava/settings.json';
+type Props = { account: AccountItem };
 
-const Home: NextPage = () => {
-  const envStravaSettings = stravaSettings[process.env.NODE_ENV];
-
+const Gear: NextPage = ({ account }: Props) => {
   return (
     <div className={styles.container}>
       <Head>
@@ -20,7 +20,11 @@ const Home: NextPage = () => {
       </Head>
 
       <main className={styles.main}>
-        <h1 className={styles.title}>Your Gear</h1>
+        <h1 className={styles.title}>Your Gear, {account.firstname}</h1>
+
+        <div className={styles.grid}>
+          <a href={`/api/logout`}>logout</a>
+        </div>
       </main>
 
       <footer className={styles.footer}>
@@ -39,4 +43,18 @@ const Home: NextPage = () => {
   );
 };
 
-export default Home;
+export const getServerSideProps = withSession(async function ({ req, res }) {
+  const account = await Account.findOne({ id: req.session.get('accountId') });
+  if (!account) {
+    res.setHeader('location', '/');
+    res.statusCode = 302;
+    res.end();
+    return { props: {} };
+  }
+
+  return {
+    props: { account },
+  };
+});
+
+export default Gear;
