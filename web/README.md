@@ -8,6 +8,7 @@ Bootstrap Environment settings:
 export NODE_ENV=[?]
        STRAVA_CLIENT_SECRET=[?]
        SESSION_SECRET=[?]
+       MONGODB_URI=[?]
 ```
 
 Run the development server:
