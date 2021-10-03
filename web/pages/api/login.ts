@@ -48,15 +48,17 @@ export default withSession(async (req, res) => {
 
     // Update Gear data
     const { bikes } = await getAthlete(account.stravaAccessToken);
-    const gears = bikes.map((bike) => ({
-      id: bike.id,
-      accountId: account.id,
-      primary: bike.primary,
-      name: bike.name,
-      retired: bike.retired,
-      distance: bike.distance,
-      gearType: 'bike',
-    }));
+    const gears = bikes
+      .filter((bike) => !bike.retired)
+      .map((bike) => ({
+        id: bike.id,
+        accountId: account.id,
+        primary: bike.primary,
+        name: bike.name,
+        retired: bike.retired,
+        distance: bike.distance,
+        gearType: 'bike',
+      }));
     const gearIds = gears.map((gear) => gear.id);
     await Gear.saveAll(gears);
     await Gear.removeByNotIds(gearIds);
