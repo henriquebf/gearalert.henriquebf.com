@@ -4,7 +4,10 @@ import postPushSubscriptions from '@/services/strava/postPushSubscriptions';
 
 // Start push notifications
 const verifyToken = 'm25dYE2zRmBFRifZOC73';
-postPushSubscriptions(verifyToken);
+if (process.env.NODE_ENV === 'production') {
+  console.log(`api/push: subscribing...`);
+  postPushSubscriptions(verifyToken);
+}
 
 type Data =
   | {}
