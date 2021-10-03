@@ -1,7 +1,9 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
 import withSession from '@/lib/session';
 import Account from '@/models/Account';
+import Gear from '@/models/Gear';
 import postOAuthToken from 'services/strava/postOAuthToken';
+import getAthlete from '@/services/strava/getAthlete';
 
 export default withSession(async (req, res) => {
   try {
@@ -16,9 +18,13 @@ export default withSession(async (req, res) => {
 
     let account = await Account.findOne({ stravaId: data.athlete.id });
     if (!account) {
-      const newAccount = {
+      // Create account
+      account = await Account.save({
         email: '',
         stravaId: data.athlete.id,
+        stravaRefreshToken: data.refresh_token,
+        stravaAccessToken: data.access_token,
+        stravaTokenExpiresAt: data.expires_at,
         username: data.athlete.username,
         firstname: data.athlete.firstname,
         lastname: data.athlete.lastname,
@@ -29,16 +35,40 @@ export default withSession(async (req, res) => {
         sex: data.athlete.sex,
         profile_medium: data.athlete.profile_medium,
         profile: data.athlete.profile,
-      };
-      account = await Account.save(newAccount);
+      });
+    } else {
+      // Update tokens
+      account = await Account.save({
+        id: account.id,
+        stravaRefreshToken: data.refresh_token,
+        stravaAccessToken: data.access_token,
+        stravaTokenExpiresAt: data.expires_at,
+      });
     }
 
+    // Update Gear data
+    const { bikes } = await getAthlete(account.stravaAccessToken);
+    const gears = bikes.map((bike) => ({
+      id: bike.id,
+      accountId: account.id,
+      primary: bike.primary,
+      name: bike.name,
+      retired: bike.retired,
+      distance: bike.distance,
+      gearType: 'bike',
+    }));
+    const gearNotIds = gears.map((gear) => gear.id);
+    await Gear.saveAll(gears);
+    await Gear.removeByNotIds(gearNotIds);
+
+    // Save session
     req.session.set('accountId', account.id);
     await req.session.save();
 
     res.redirect('/gear');
   } catch (err) {
     console.error(err);
+    req.session.destroy();
     res.redirect('/');
   }
 });
