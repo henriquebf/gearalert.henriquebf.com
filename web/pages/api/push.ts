@@ -37,7 +37,7 @@ export default async function handler(
       account.stravaRefreshToken,
       'refresh_token'
     );
-    if (!data?.athlete?.id) {
+    if (!data?.access_token) {
       throw new Error('api/push: invalid token response!');
     }
     account = await Account.save({
