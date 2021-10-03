@@ -8,7 +8,7 @@ export type NextIronRequest = NextApiRequest & { session: Session };
 export type NextIronHandler = (
   req: NextIronRequest,
   res: NextApiResponse
-) => void | Promise<void>;
+) => void | Promise<void> | Promise<any>;
 
 const withSession = (handler: NextIronHandler) => {
   if (!process.env.SESSION_SECRET) {
@@ -17,12 +17,13 @@ const withSession = (handler: NextIronHandler) => {
 
   return withIronSession(handler, {
     password: process.env.SESSION_SECRET,
-    cookieName: 'bikealert',
+    cookieName: 'gearalert',
     cookieOptions: {
       // the next line allows to use the session in non-https environments like
       // Next.js dev mode (http://localhost:3000)
       secure: process.env.NODE_ENV === 'production',
     },
+    ttl: 3600,
   });
 };
 
