@@ -24,7 +24,7 @@ export default async function handler(
   }
 
   // Execute push
-  console.log(`api/push: receiving push...`, req.query);
+  console.log(`api/push: receiving push...`, req.body);
   // WIP
   res.status(200).json({});
 }
