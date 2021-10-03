@@ -1,10 +1,13 @@
 import * as uuid from 'uuid';
 import { findOne, updateMany, deleteMany } from '@/lib/db';
 
-interface Item {
+export interface AccountItem {
   id: string;
   email: string;
   stravaId: number;
+  stravaRefreshToken: string;
+  stravaAccessToken: string;
+  stravaTokenExpiresAt: number;
   username: string;
   firstname: string;
   lastname: string;
@@ -22,11 +25,11 @@ interface Item {
 class Account {
   _collection: string = 'accounts';
 
-  async findOne(filter: Partial<Item>): Promise<Item> {
+  async findOne(filter: Partial<AccountItem>): Promise<AccountItem> {
     return findOne(this._collection, filter);
   }
 
-  async save(item: Partial<Item>): Promise<Item> {
+  async save(item: Partial<AccountItem>): Promise<AccountItem> {
     if (!item.id) {
       item.id = uuid.v4();
       item.createdAt = Date.now();
@@ -37,7 +40,7 @@ class Account {
   }
 
   async removeById(id: string): Promise<void> {
-    return deleteMany(this._collection, [id]);
+    return deleteMany(this._collection, { id: { $in: [id] } });
   }
 }
 

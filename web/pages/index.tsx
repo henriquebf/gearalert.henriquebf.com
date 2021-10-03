@@ -2,10 +2,12 @@ import type { NextPage } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
 import styles from '../styles/Home.module.css';
+import withSession, { ServerSideHandler } from '@/lib/session';
+import Account from '@/models/Account';
 
 import stravaSettings from '@/services/strava/settings.json';
 
-const Home: NextPage = () => {
+const IndexPage: NextPage = () => {
   const envStravaSettings = stravaSettings[process.env.NODE_ENV];
 
   return (
@@ -51,4 +53,20 @@ const Home: NextPage = () => {
   );
 };
 
-export default Home;
+export const getServerSideProps = withSession<ServerSideHandler>(
+  async function ({ req, res }) {
+    const account = await Account.findOne({ id: req.session.get('accountId') });
+    if (account) {
+      res.setHeader('location', '/gear');
+      res.statusCode = 302;
+      res.end();
+      return { props: { account } };
+    }
+
+    return {
+      props: {},
+    };
+  }
+);
+
+export default IndexPage;

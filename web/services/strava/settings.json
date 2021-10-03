@@ -1,17 +1,17 @@
 {
   "test": {
     "clientId": "71939",
-    "redirect_uri": "http://localhost:3000/api/oauth",
-    "scope": "read"
+    "redirect_uri": "http://localhost:3000/api/login",
+    "scope": "profile:read_all"
   },
   "development": {
     "clientId": "71939",
-    "redirect_uri": "http://localhost:3000/api/oauth",
-    "scope": "read"
+    "redirect_uri": "http://localhost:3000/api/login",
+    "scope": "profile:read_all"
   },
   "production": {
     "clientId": "71939",
-    "redirect_uri": "https://gearalert.henriquebf.com/api/oauth",
-    "scope": "read"
+    "redirect_uri": "https://gearalert.henriquebf.com/api/login",
+    "scope": "profile:read_all"
   }
 }
