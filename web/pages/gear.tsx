@@ -20,19 +20,7 @@ const Home: NextPage = () => {
       </Head>
 
       <main className={styles.main}>
-        <h1 className={styles.title}>Gear Alert</h1>
-
-        <p className={styles.description}>
-          Get a notification to maintain your gear
-        </p>
-
-        <div className={styles.grid}>
-          <a
-            href={`http://www.strava.com/oauth/authorize?client_id=${envStravaSettings.clientId}&response_type=code&redirect_uri=${envStravaSettings.redirect_uri}&approval_prompt=force&scope=${envStravaSettings.scope}`}
-          >
-            Connect with strava
-          </a>
-        </div>
+        <h1 className={styles.title}>Your Gear</h1>
       </main>
 
       <footer className={styles.footer}>
