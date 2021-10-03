@@ -1,13 +1,9 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import stravaSettings from '@/services/strava/settings.json';
-import postPushSubscriptions from '@/services/strava/postPushSubscriptions';
+import postPushSubscriptions, {
+  verifyToken,
+} from '@/services/strava/postPushSubscriptions';
 
-// Start push notifications
-const verifyToken = 'm25dYE2zRmBFRifZOC73';
-if (process.env.NODE_ENV === 'production') {
-  console.log(`api/push: subscribing...`);
-  postPushSubscriptions(verifyToken);
-}
+let hasSubscribed = false;
 
 type Data =
   | {}
@@ -15,12 +11,17 @@ type Data =
       'hub.challenge': string;
     };
 
-export default function handler(
+export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  // Check validation from Strava
-  const stravaEnvSettings = stravaSettings[process.env.NODE_ENV];
+  // Start push notifications
+  if (process.env.NODE_ENV === 'production' && !hasSubscribed) {
+    postPushSubscriptions();
+    hasSubscribed = true;
+  }
+
+  // Confirm subscribe to strava
   if (
     req.query?.['hub.verify_token'] === verifyToken &&
     req.query?.['hub.mode'] === 'subscribe' &&
@@ -33,9 +34,7 @@ export default function handler(
   }
 
   // Execute push
-  console.log(
-    `api/push: receiving push for ${req.query?.owner_id}/${req.query?.object_type}`
-  );
+  console.log(`api/push: receiving push...`, req.query);
   // WIP
   res.status(200).json({});
 }
