@@ -57,9 +57,9 @@ export default withSession(async (req, res) => {
       distance: bike.distance,
       gearType: 'bike',
     }));
-    const gearNotIds = gears.map((gear) => gear.id);
+    const gearIds = gears.map((gear) => gear.id);
     await Gear.saveAll(gears);
-    await Gear.removeByNotIds(gearNotIds);
+    await Gear.removeByNotIds(gearIds);
 
     // Save session
     req.session.set('accountId', account.id);

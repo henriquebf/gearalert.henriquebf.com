@@ -30,7 +30,6 @@ class Account {
 
   async saveAll(items: GearItem[]): Promise<void> {
     for (const item of items) {
-      console.log('item:', item);
       await updateMany(this._collection, item.id, item);
     }
   }
