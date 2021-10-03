@@ -13,7 +13,7 @@ const postPushSubscriptions = async (): Promise<void> => {
       verify_token: verifyToken,
     }
   );
-  console.log('postPushSubscriptions:', res);
+  console.log('postPushSubscriptions: subscribed', res.data);
 };
 
 export default postPushSubscriptions;
