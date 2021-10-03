@@ -1,6 +1,7 @@
 // Ref: https://github.com/vercel/next.js/tree/canary/examples/with-mongodb
 import { MongoClient } from 'mongodb';
 
+const dbName = 'v1';
 const uri = process.env.MONGODB_URI ?? '';
 const options: any = {
   useUnifiedTopology: true,
@@ -25,7 +26,7 @@ export const findOne = async (
   return new Promise(async (resolve) => {
     const client = await clientPromise;
     client
-      .db()
+      .db(dbName)
       .collection(collection)
       .findOne(filter, { projection: { _id: 0 } }, (err, record) => {
         if (err) throw new Error(`db:findOne: Failed for ${collection}!`);
@@ -44,7 +45,7 @@ export const find = async (
   return new Promise(async (resolve) => {
     const client = await clientPromise;
     client
-      .db()
+      .db(dbName)
       .collection(collection)
       .find(filter ?? {}, { projection: { _id: 0 } })
       .skip(offset ?? 0)
@@ -65,7 +66,7 @@ export const updateMany = async (
   return new Promise(async (resolve) => {
     const client = await clientPromise;
     client
-      .db()
+      .db(dbName)
       .collection(collection)
       .updateMany({ id }, { $set: properties }, { upsert: true }, (err) => {
         if (err) throw new Error(`db:updateMany: Failed for ${collection}!`);
@@ -76,14 +77,14 @@ export const updateMany = async (
 
 export const deleteMany = async (
   collection: string,
-  ids: string[]
+  filter: AnyObject
 ): Promise<void> => {
   return new Promise(async (resolve) => {
     const client = await clientPromise;
     client
-      .db()
+      .db(dbName)
       .collection(collection)
-      .deleteMany({ email: { $in: ids } }, (err) => {
+      .deleteMany(filter, (err) => {
         if (err) throw new Error(`db:deleteMany: Failed for ${collection}!`);
         return resolve();
       });
