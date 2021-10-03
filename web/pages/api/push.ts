@@ -32,18 +32,20 @@ export default async function handler(
   console.log(`api/push: receiving push for ${req.body.owner_id}...`);
   let account = await Account.findOne({ stravaId: req.body.owner_id });
   if (account) {
-    // Update access token
-    const data = await postOAuthToken(
-      account.stravaRefreshToken,
-      'refresh_token'
-    );
-    if (!data?.access_token) {
-      throw new Error('api/push: invalid token response!');
+    // Check/Update access token
+    if (account.stravaTokenExpiresAt < Date.now() / 1000) {
+      const data = await postOAuthToken(
+        account.stravaRefreshToken,
+        'refresh_token'
+      );
+      if (!data?.access_token) {
+        throw new Error('api/push: invalid token response!');
+      }
+      account = await Account.save({
+        id: account.id,
+        stravaAccessToken: data.access_token,
+      });
     }
-    account = await Account.save({
-      id: account.id,
-      stravaAccessToken: data.access_token,
-    });
 
     // Update Gear data
     const athlete = await getAthlete(account.stravaAccessToken);
