@@ -1,4 +1,4 @@
-import { findOne, updateMany, deleteMany } from '@/lib/db';
+import { find, findOne, updateMany, deleteMany } from '@/lib/db';
 
 export interface GearItem {
   id: string;
@@ -15,8 +15,12 @@ export interface GearItem {
   lastGearCablesAt?: number;
 }
 
-class Account {
+class Gear {
   _collection: string = 'gears';
+
+  async find(filter: Partial<GearItem>): Promise<GearItem[]> {
+    return find(this._collection, filter);
+  }
 
   async findOne(filter: Partial<GearItem>): Promise<GearItem> {
     return findOne(this._collection, filter);
@@ -39,4 +43,4 @@ class Account {
   }
 }
 
-export default new Account();
+export default new Gear();

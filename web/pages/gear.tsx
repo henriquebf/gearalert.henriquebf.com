@@ -3,10 +3,11 @@ import Image from 'next/image';
 import styles from '../styles/Home.module.css';
 import withSession, { ServerSideHandler } from '@/lib/session';
 import Account, { AccountItem } from '@/models/Account';
+import Gear, { GearItem } from '@/models/Gear';
 
-type Props = { account: AccountItem };
+type Props = { account: AccountItem; gears: GearItem[] };
 
-const Gear = ({ account }: Props) => {
+const GearPage = ({ account, gears }: Props) => {
   return (
     <div className={styles.container}>
       <Head>
@@ -20,6 +21,12 @@ const Gear = ({ account }: Props) => {
 
       <main className={styles.main}>
         <h1 className={styles.title}>Your Gear, {account.firstname}</h1>
+
+        <>
+          {gears.map((gear) => (
+            <div key={gear.id}>{gear.name}</div>
+          ))}
+        </>
 
         <div className={styles.grid}>
           <a href={`/api/logout`}>logout</a>
@@ -52,10 +59,12 @@ export const getServerSideProps = withSession<ServerSideHandler>(
       return { props: {} };
     }
 
+    const gears = await Gear.find({ accountId: account.id });
+
     return {
-      props: { account },
+      props: { account, gears },
     };
   }
 );
 
-export default Gear;
+export default GearPage;

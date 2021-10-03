@@ -7,7 +7,7 @@ import Account from '@/models/Account';
 
 import stravaSettings from '@/services/strava/settings.json';
 
-const Home: NextPage = () => {
+const IndexPage: NextPage = () => {
   const envStravaSettings = stravaSettings[process.env.NODE_ENV];
 
   return (
@@ -69,4 +69,4 @@ export const getServerSideProps = withSession<ServerSideHandler>(
   }
 );
 
-export default Home;
+export default IndexPage;
