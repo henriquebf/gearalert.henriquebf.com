@@ -2,7 +2,7 @@ import type { NextPage } from 'next';
 import Head from 'next/head';
 import Image from 'next/image';
 import styles from '../styles/Home.module.css';
-import withSession from '@/lib/session';
+import withSession, { ServerSideHandler } from '@/lib/session';
 import Account from '@/models/Account';
 
 import stravaSettings from '@/services/strava/settings.json';
@@ -53,18 +53,20 @@ const Home: NextPage = () => {
   );
 };
 
-export const getServerSideProps = withSession(async function ({ req, res }) {
-  const account = await Account.findOne({ id: req.session.get('accountId') });
-  if (account) {
-    res.setHeader('location', '/gear');
-    res.statusCode = 302;
-    res.end();
-    return { props: { account } };
-  }
+export const getServerSideProps = withSession<ServerSideHandler>(
+  async function ({ req, res }) {
+    const account = await Account.findOne({ id: req.session.get('accountId') });
+    if (account) {
+      res.setHeader('location', '/gear');
+      res.statusCode = 302;
+      res.end();
+      return { props: { account } };
+    }
 
-  return {
-    props: {},
-  };
-});
+    return {
+      props: {},
+    };
+  }
+);
 
 export default Home;
