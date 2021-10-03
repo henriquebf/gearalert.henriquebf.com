@@ -1,10 +1,10 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import stravaSettings from '@/services/strava/settings.json';
-import postPushSubscriptions from '@/services/strava/postPushSubscriptions';
-
-// Start push notifications
-const verifyToken = 'm25dYE2zRmBFRifZOC73';
-postPushSubscriptions(verifyToken);
+import { verifyToken } from '@/services/strava/postPushSubscriptions';
+import postOAuthToken from 'services/strava/postOAuthToken';
+import getAthlete from '@/services/strava/getAthlete';
+import Account from '@/models/Account';
+import Gear from '@/models/Gear';
+import { generateGearFromAthlete } from '@/helpers/gearHelper';
 
 type Data =
   | {}
@@ -12,12 +12,11 @@ type Data =
       'hub.challenge': string;
     };
 
-export default function handler(
+export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  // Check validation from Strava
-  const stravaEnvSettings = stravaSettings[process.env.NODE_ENV];
+  // Confirm subscribe to strava
   if (
     req.query?.['hub.verify_token'] === verifyToken &&
     req.query?.['hub.mode'] === 'subscribe' &&
@@ -30,9 +29,30 @@ export default function handler(
   }
 
   // Execute push
-  console.log(
-    `api/push: receiving push for ${req.query?.owner_id}/${req.query?.object_type}`
-  );
-  // WIP
+  console.log(`api/push: receiving push for ${req.body.owner_id}...`);
+  let account = await Account.findOne({ stravaId: req.body.owner_id });
+  if (account) {
+    // Update access token
+    const data = await postOAuthToken(
+      account.stravaRefreshToken,
+      'refresh_token'
+    );
+    if (!data?.access_token) {
+      throw new Error('api/push: invalid token response!');
+    }
+    account = await Account.save({
+      id: account.id,
+      stravaAccessToken: data.access_token,
+    });
+
+    // Update Gear data
+    const athlete = await getAthlete(account.stravaAccessToken);
+    const gears = generateGearFromAthlete(account.id, 'bikes', athlete.bikes);
+    const gearIds = gears.map((gear) => gear.id);
+    await Gear.saveAll(gears);
+    await Gear.removeByNotIds(gearIds);
+    console.log(`api/push: updated data for ${req.body.owner_id}.`);
+  }
+
   res.status(200).json({});
 }
