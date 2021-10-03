@@ -53,8 +53,6 @@ const postOAuthToken = async (
 
   const res: any = await axios.post(`https://www.strava.com/oauth/token`, body);
 
-  console.log('>>>>>>>', res?.data);
-
   return res?.data || undefined;
 };
 
