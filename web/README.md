@@ -7,6 +7,7 @@ Bootstrap Environment settings:
 ```
 export NODE_ENV=[?]
        STRAVA_CLIENT_SECRET=[?]
+       POSTMARK_SECRET=[?]
        SESSION_SECRET=[?]
        MONGODB_URI=[?]
 ```
