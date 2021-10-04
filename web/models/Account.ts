@@ -1,7 +1,7 @@
 import * as uuid from 'uuid';
 import { findOne, updateMany, deleteMany } from '@/lib/db';
 
-export interface AccountItem {
+export interface AccountRecord {
   id: string;
   email: string;
   stravaId: number;
@@ -25,11 +25,11 @@ export interface AccountItem {
 class Account {
   _collection: string = 'accounts';
 
-  async findOne(filter: Partial<AccountItem>): Promise<AccountItem> {
+  async findOne(filter: Partial<AccountRecord>): Promise<AccountRecord> {
     return findOne(this._collection, filter);
   }
 
-  async save(item: Partial<AccountItem>): Promise<AccountItem> {
+  async save(item: Partial<AccountRecord>): Promise<AccountRecord> {
     if (!item.id) {
       item.id = uuid.v4();
       item.createdAt = Date.now();
