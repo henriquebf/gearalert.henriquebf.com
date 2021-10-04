@@ -1,11 +1,12 @@
 import Head from 'next/head';
 import Image from 'next/image';
-import styles from '../styles/Home.module.css';
+import styles from '@/styles/Home.module.css';
 import withSession, { ServerSideHandler } from '@/lib/session';
-import Account, { AccountItem } from '@/models/Account';
-import Gear, { GearItem } from '@/models/Gear';
+import Account, { AccountRecord } from '@/models/Account';
+import Gear, { GearRecord } from '@/models/Gear';
+import GearItem from '@/components/GearItem';
 
-type Props = { account: AccountItem; gears: GearItem[] };
+type Props = { account: AccountRecord; gears: GearRecord[] };
 
 const GearPage = ({ account, gears }: Props) => {
   return (
@@ -19,15 +20,17 @@ const GearPage = ({ account, gears }: Props) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
+      <p className={styles.description}>Hello {account.firstname}</p>
+
+      <div className={styles.grid}>
+        {gears.map((gear) => (
+          <div key={gear.id} className={styles.card}>
+            <GearItem gear={gear} />
+          </div>
+        ))}
+      </div>
+
       <main className={styles.main}>
-        <h1 className={styles.title}>Your Gear, {account.firstname}</h1>
-
-        <>
-          {gears.map((gear) => (
-            <div key={gear.id}>{gear.name}</div>
-          ))}
-        </>
-
         <div className={styles.grid}>
           <a href={`/api/logout`}>logout</a>
         </div>

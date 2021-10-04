@@ -1,6 +1,6 @@
 import { find, findOne, updateMany, deleteMany } from '@/lib/db';
 
-export interface GearItem {
+export interface GearRecord {
   id: string;
   accountId: string;
   primary: boolean;
@@ -18,21 +18,21 @@ export interface GearItem {
 class Gear {
   _collection: string = 'gears';
 
-  async find(filter: Partial<GearItem>): Promise<GearItem[]> {
+  async find(filter: Partial<GearRecord>): Promise<GearRecord[]> {
     return find(this._collection, filter);
   }
 
-  async findOne(filter: Partial<GearItem>): Promise<GearItem> {
+  async findOne(filter: Partial<GearRecord>): Promise<GearRecord> {
     return findOne(this._collection, filter);
   }
 
-  async save(item: Partial<GearItem>): Promise<GearItem | undefined> {
+  async save(item: Partial<GearRecord>): Promise<GearRecord | undefined> {
     if (!item.id) throw new Error(`Gear:save: Missing id!`);
     await updateMany(this._collection, item.id, item);
     return this.findOne({ id: item.id });
   }
 
-  async saveAll(items: GearItem[]): Promise<void> {
+  async saveAll(items: GearRecord[]): Promise<void> {
     for (const item of items) {
       await updateMany(this._collection, item.id, item);
     }
