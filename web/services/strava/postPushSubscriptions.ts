@@ -4,7 +4,6 @@ import stravaSettings from '@/services/strava/settings.json';
 export const verifyToken = 'm25dYE2zRmBFRifZOC73';
 
 const postPushSubscriptions = async (): Promise<void> => {
-  console.log('postPushSubscriptions: subscribing...');
   try {
     const envStravaSettings = stravaSettings[process.env.NODE_ENV];
     const res = await axios.post(
@@ -18,8 +17,8 @@ const postPushSubscriptions = async (): Promise<void> => {
         },
       }
     );
-  } catch (err) {
-    console.error('postPushSubscriptions:', err);
+  } catch (err: any) {
+    throw new Error(`postPushSubscriptions: ${err.message}`);
   }
 };
 
