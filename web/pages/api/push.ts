@@ -16,7 +16,7 @@ export default async function handler(
   req: NextApiRequest,
   res: NextApiResponse<Data>
 ) {
-  // Confirm subscribe to strava
+  // Respond to Strava, if confirming subscription
   if (
     req.query?.['hub.verify_token'] === verifyToken &&
     req.query?.['hub.mode'] === 'subscribe' &&
@@ -28,7 +28,7 @@ export default async function handler(
       .json({ 'hub.challenge': req.query?.['hub.challenge'] });
   }
 
-  // Execute push
+  // Execute user push
   console.log(`api/push: receiving push for ${req.body.owner_id}...`);
   let account = await Account.findOne({ stravaId: req.body.owner_id });
   if (account) {
