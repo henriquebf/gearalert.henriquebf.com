@@ -35,7 +35,7 @@ class Account {
       item.createdAt = Date.now();
     }
     item.updatedAt = Date.now();
-    await updateMany(this._collection, item.id, item);
+    await updateMany(this._collection, { id: item.id }, item);
     return this.findOne({ id: item.id });
   }
 

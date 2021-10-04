@@ -1,19 +1,33 @@
+import axios from 'axios';
 import styles from '@/styles/Home.module.css';
 import GearMaintenanceItem from '@/components/GearMaintenanceItem';
 import { GearRecord } from '@/models/Gear';
+import Toggle from '@/components/form/Toggle';
 import { populateMaintenanceItems } from '@/helpers/gearHelper';
 
-type Props = { gear: GearRecord; onDataChanged: () => void };
+type Props = { gear: GearRecord; refreshData: () => void };
 
-const GearItem = ({ gear, onDataChanged }: Props) => {
+const GearItem = ({ gear, refreshData }: Props) => {
   const distanceInKm = Math.floor(gear.distance / 1000);
   const maintenanceItems = populateMaintenanceItems(gear);
+
+  const onToggleChange = async (value: boolean) => {
+    await axios.post('/api/toggle', {
+      gearId: gear.id,
+      value,
+    });
+  };
 
   return (
     <>
       <div className={styles.info}>
-        <b>{gear.name}</b> {gear.primary ? '(primary)' : ''}
-        <div className={styles.distance}>Total {distanceInKm} km</div>
+        <b>{gear.name}</b> - {distanceInKm} km
+        <div className={styles.distance}>
+          <Toggle
+            initialState={gear.isNotificationEnabled === true}
+            onChanged={onToggleChange}
+          />
+        </div>
       </div>
 
       {maintenanceItems.map((m, i) => (
@@ -24,7 +38,7 @@ const GearItem = ({ gear, onDataChanged }: Props) => {
           label={m.label}
           dueDistance={m.dueDistance}
           lastMaintenanceAt={m.lastMaintenanceAt}
-          onDataChanged={onDataChanged}
+          refreshData={refreshData}
         />
       ))}
     </>

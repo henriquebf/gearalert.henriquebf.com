@@ -60,7 +60,7 @@ export const find = async (
 
 export const updateMany = async (
   collection: string,
-  id: string,
+  filter: AnyObject,
   properties: AnyObject
 ): Promise<void> => {
   return new Promise(async (resolve) => {
@@ -68,7 +68,7 @@ export const updateMany = async (
     client
       .db(dbName)
       .collection(collection)
-      .updateMany({ id }, { $set: properties }, { upsert: true }, (err) => {
+      .updateMany(filter, { $set: properties }, { upsert: true }, (err) => {
         if (err) throw new Error(`db:updateMany: Failed for ${collection}!`);
         resolve();
       });
