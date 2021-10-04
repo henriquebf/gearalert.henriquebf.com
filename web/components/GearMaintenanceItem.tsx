@@ -22,6 +22,13 @@ const GearMaintenanceItem = ({
   lastMaintenanceAt,
   onDataChanged,
 }: Props) => {
+  const [isHovered, eventHandlers] = useHover();
+  const [isEditing, setEditing] = useState(false);
+  const [isSaving, setSaving] = useState(false);
+  const [fieldValue, setFieldValue] = useState(
+    Math.floor(lastMaintenanceAt / 1000)
+  );
+
   const dueDistanceInKm = Math.floor(dueDistance / 1000);
   const statusStyle =
     dueDistanceInKm > 500
@@ -29,13 +36,6 @@ const GearMaintenanceItem = ({
       : dueDistanceInKm > 0
       ? styles.warn
       : styles.overdue;
-
-  const [isHovered, eventHandlers] = useHover();
-  const [isEditing, setEditing] = useState(false);
-  const [isSaving, setSaving] = useState(false);
-  const [fieldValue, setFieldValue] = useState(
-    Math.floor(lastMaintenanceAt / 1000)
-  );
 
   const onClick = () => {
     setEditing(true);

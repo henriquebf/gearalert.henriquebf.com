@@ -16,19 +16,17 @@ const GearItem = ({ gear, onDataChanged }: Props) => {
         <div className={styles.distance}>Total {distanceInKm} km</div>
       </div>
 
-      <div>
-        {maintenanceItems.map((m, i) => (
-          <GearMaintenanceItem
-            key={i}
-            gearId={m.gearId}
-            property={m.property}
-            label={m.label}
-            dueDistance={m.dueDistance}
-            lastMaintenanceAt={m.lastMaintenanceAt}
-            onDataChanged={onDataChanged}
-          />
-        ))}
-      </div>
+      {maintenanceItems.map((m, i) => (
+        <GearMaintenanceItem
+          key={i}
+          gearId={m.gearId}
+          property={m.property}
+          label={m.label}
+          dueDistance={m.dueDistance}
+          lastMaintenanceAt={m.lastMaintenanceAt}
+          onDataChanged={onDataChanged}
+        />
+      ))}
     </>
   );
 };
