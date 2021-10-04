@@ -3,12 +3,13 @@ import { find, findOne, updateMany, deleteMany } from '@/lib/db';
 export interface GearRecord {
   id: string;
   accountId: string;
-  primary: boolean;
+  isPrimary: boolean;
   name: string;
   retired: boolean;
   gearType: string;
-  distance: number;
-  distanceLastNotification?: number;
+  distance: number; // in meter
+  distanceLastNotification?: number; // in meter
+  isNotificationEnabled?: boolean;
   lastChainAt?: number;
   lastTiresAt?: number;
   lastBrakePadsAt?: number;

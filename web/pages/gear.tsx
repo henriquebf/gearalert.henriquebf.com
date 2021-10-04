@@ -32,7 +32,7 @@ const GearPage = ({ account, gears }: Props) => {
       <div className={styles.grid}>
         {gears.map((gear) => (
           <div key={gear.id} className={styles.card}>
-            <GearItem gear={gear} onDataChanged={refreshData} />
+            <GearItem gear={gear} refreshData={refreshData} />
           </div>
         ))}
       </div>

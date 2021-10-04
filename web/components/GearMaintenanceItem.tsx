@@ -11,7 +11,7 @@ type Props = {
   label: string;
   lastMaintenanceAt: number;
   dueDistance: number;
-  onDataChanged: () => void;
+  refreshData: () => void;
 };
 
 const GearMaintenanceItem = ({
@@ -20,7 +20,7 @@ const GearMaintenanceItem = ({
   label,
   dueDistance,
   lastMaintenanceAt,
-  onDataChanged,
+  refreshData,
 }: Props) => {
   const [isHovered, eventHandlers] = useHover();
   const [isEditing, setEditing] = useState(false);
@@ -47,7 +47,7 @@ const GearMaintenanceItem = ({
 
   const onSave = async () => {
     setSaving(true);
-    const res = await axios.post('/api/save', {
+    await axios.post('/api/save', {
       gearId,
       property,
       value: fieldValue * 1000,
@@ -55,9 +55,7 @@ const GearMaintenanceItem = ({
     setEditing(false);
     setSaving(false);
 
-    if (res.status < 300) {
-      onDataChanged();
-    }
+    refreshData();
   };
 
   const textInput = (

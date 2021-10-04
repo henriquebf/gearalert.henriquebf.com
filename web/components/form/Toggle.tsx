@@ -1,12 +1,13 @@
-import styles from '@/styles/Toggle.module.css';
 import { useState } from 'react';
+import styles from '@/styles/Toggle.module.css';
 
-type Props = { initialState: boolean; onChanged: () => void };
+type Props = { initialState: boolean; onChanged: (isChecked: boolean) => void };
 
-const Toggle = ({ initialState }: Props) => {
+const Toggle = ({ initialState, onChanged }: Props) => {
   const [isChecked, setChecked] = useState(initialState);
 
   const handleChange = () => {
+    onChanged(!isChecked);
     setChecked(!isChecked);
   };
 
@@ -14,7 +15,7 @@ const Toggle = ({ initialState }: Props) => {
     <label className={styles.switch}>
       <input
         type="checkbox"
-        value={String(isChecked)}
+        defaultChecked={isChecked}
         onChange={handleChange}
       />
       <div className={styles.slider}></div>

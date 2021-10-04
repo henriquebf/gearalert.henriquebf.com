@@ -12,7 +12,7 @@ export const generateGearFromAthlete = (
     .map((bike) => ({
       id: bike.id,
       accountId,
-      primary: bike.primary,
+      isPrimary: bike.primary,
       name: bike.name,
       retired: bike.retired,
       distance: bike.distance,
