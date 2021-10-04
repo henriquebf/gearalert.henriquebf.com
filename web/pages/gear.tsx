@@ -27,6 +27,8 @@ const GearPage = ({ account, gears }: Props) => {
 
       <p className={styles.description}>Hello, {account.firstname}.</p>
 
+      <div className={styles.options}>[EMAIL]</div>
+
       <div className={styles.grid}>
         {gears.map((gear) => (
           <div key={gear.id} className={styles.card}>
@@ -34,8 +36,6 @@ const GearPage = ({ account, gears }: Props) => {
           </div>
         ))}
       </div>
-
-      <main className={styles.main}></main>
 
       <footer className={styles.footer}>
         <a href={`/api/logout`}>logout</a>
