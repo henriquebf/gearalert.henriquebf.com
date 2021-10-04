@@ -6,8 +6,9 @@ export interface GearRecord {
   primary: boolean;
   name: string;
   retired: boolean;
-  distance: number;
   gearType: string;
+  distance: number;
+  distanceLastNotification?: number;
   lastChainAt?: number;
   lastTiresAt?: number;
   lastBrakePadsAt?: number;
