@@ -2,7 +2,6 @@ import axios from 'axios';
 import stravaSettings from '@/services/strava/settings.json';
 
 const getPushSubscriptions = async (): Promise<void> => {
-  console.log('getPushSubscriptions: sending...');
   try {
     const envStravaSettings = stravaSettings[process.env.NODE_ENV];
     const res = await axios.get(
@@ -14,9 +13,8 @@ const getPushSubscriptions = async (): Promise<void> => {
         },
       }
     );
-    console.log('getPushSubscriptions: received', res.data);
-  } catch (err) {
-    console.error('getPushSubscriptions', err);
+  } catch (err: any) {
+    throw new Error(`getPushSubscriptions: ${err.message}`);
   }
 };
 

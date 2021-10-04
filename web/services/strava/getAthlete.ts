@@ -15,14 +15,18 @@ export type AthleteData = {
 };
 
 const getAthlete = async (accessToken: string): Promise<AthleteData> => {
-  const res: any = await axios.get(`https://www.strava.com/api/v3/athlete`, {
-    headers: {
-      Accept: 'application/json',
-      Authorization: `Bearer ${accessToken}`,
-    },
-  });
+  try {
+    const res: any = await axios.get(`https://www.strava.com/api/v3/athlete`, {
+      headers: {
+        Accept: 'application/json',
+        Authorization: `Bearer ${accessToken}`,
+      },
+    });
 
-  return res?.data || undefined;
+    return res?.data || undefined;
+  } catch (err: any) {
+    throw new Error(`getAthlete: ${err.message}`);
+  }
 };
 
 export default getAthlete;

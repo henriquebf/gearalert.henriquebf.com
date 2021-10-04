@@ -25,6 +25,7 @@ export default withSession(async (req, res) => {
     return res.status(404).json({});
   }
 
+  // Save data submitted by user
   await Gear.save({
     ...gear,
     [req.body?.property as keyof GearRecord]: req.body?.value,

@@ -51,9 +51,15 @@ const postOAuthToken = async (
     body.code = code;
   }
 
-  const res: any = await axios.post(`https://www.strava.com/oauth/token`, body);
-
-  return res?.data || undefined;
+  try {
+    const res: any = await axios.post(
+      `https://www.strava.com/oauth/token`,
+      body
+    );
+    return res?.data || undefined;
+  } catch (err: any) {
+    throw new Error(`postOAuthToken: ${err.message}`);
+  }
 };
 
 export default postOAuthToken;

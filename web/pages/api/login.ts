@@ -12,6 +12,7 @@ export default withSession(async (req, res) => {
       throw new Error('oauth: code not provided!');
     }
 
+    // Request tokens from Strava
     const data = await postOAuthToken(req.query.code, 'authorization_code');
     if (!data?.athlete?.id) {
       throw new Error('oauth: invalid token response!');

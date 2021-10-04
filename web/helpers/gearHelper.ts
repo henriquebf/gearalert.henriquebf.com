@@ -1,6 +1,7 @@
 import { GearData } from '@/services/strava/getAthlete';
 import { GearRecord } from '@/models/Gear';
 
+// Convert Athlete data received from Strava api to database format
 export const generateGearFromAthlete = (
   accountId: string,
   gearType: string,
@@ -19,6 +20,9 @@ export const generateGearFromAthlete = (
     }));
 };
 
+// Login to determine how maitenance if due each for item, by crossing
+// the total distance of the gear, last maintenance information and
+// a definition of when each item should get changed
 const maintenanceItems = [
   {
     property: 'lastChainAt',
