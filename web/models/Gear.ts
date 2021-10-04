@@ -29,13 +29,13 @@ class Gear {
 
   async save(item: Partial<GearRecord>): Promise<GearRecord | undefined> {
     if (!item.id) throw new Error(`Gear:save: Missing id!`);
-    await updateMany(this._collection, item.id, item);
+    await updateMany(this._collection, { id: item.id }, item);
     return this.findOne({ id: item.id });
   }
 
   async saveAll(items: GearRecord[]): Promise<void> {
     for (const item of items) {
-      await updateMany(this._collection, item.id, item);
+      await updateMany(this._collection, { id: item.id }, item);
     }
   }
 

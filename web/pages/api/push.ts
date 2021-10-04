@@ -3,7 +3,8 @@ import { verifyToken } from '@/services/strava/postPushSubscriptions';
 import postOAuthToken from 'services/strava/postOAuthToken';
 import getAthlete from '@/services/strava/getAthlete';
 import Account, { AccountRecord } from '@/models/Account';
-import Gear, { GearRecord } from '@/models/Gear';
+import Gear from '@/models/Gear';
+import postWithTemplate from '@/services/postmark/postTemplate';
 import {
   generateGearFromAthlete,
   populateMaintenanceItems,
@@ -84,8 +85,10 @@ const executeNotifications = async (account: AccountRecord) => {
         ).length
     );
 
+  if (overdueGear.length === 0) return;
+
   // Prepare data for email template
-  const preTemplate = overdueGear.map((gear) => {
+  const preContent = overdueGear.map((gear) => {
     const itemsToNotify = populateMaintenanceItems(gear)
       .map((i) => ({
         itemName: i.label,
@@ -99,12 +102,12 @@ const executeNotifications = async (account: AccountRecord) => {
   });
 
   // Generate template
-  const template = preTemplate
+  const content = preContent
     .map((p) => {
       const itemListStr = p.itemsToNotify
         .map(
           (i) =>
-            `<b>${i.itemName}</b> is due for ${Math.abs(
+            `${i.itemName} is due for ${Math.abs(
               Math.floor(i.dueDistance / 1000)
             )} km`
         )
@@ -113,5 +116,13 @@ const executeNotifications = async (account: AccountRecord) => {
     })
     .join('<br /><br />');
 
-  console.log(template);
+  // Send email
+  await postWithTemplate(account.email, content);
+
+  // Acknowlege notification
+  const updatedGear = gears.map((gear) => ({
+    ...gear,
+    distanceLastNotification: gear.distance,
+  }));
+  await Gear.saveAll(updatedGear);
 };
