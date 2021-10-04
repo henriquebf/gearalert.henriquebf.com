@@ -1,10 +1,12 @@
 import Head from 'next/head';
 import { useRouter } from 'next/router';
+import axios from 'axios';
 import styles from '@/styles/Home.module.css';
 import withSession, { ServerSideHandler } from '@/lib/session';
 import Account, { AccountRecord } from '@/models/Account';
 import Gear, { GearRecord } from '@/models/Gear';
 import GearItem from '@/components/GearItem';
+import EmailField from '@/components/form/EmailField';
 
 type Props = { account: AccountRecord; gears: GearRecord[] };
 
@@ -12,6 +14,12 @@ const GearPage = ({ account, gears }: Props) => {
   const router = useRouter();
   const refreshData = () => {
     router.replace(router.asPath);
+  };
+
+  const saveEmail = async (value: string) => {
+    await axios.post('/api/email', {
+      value,
+    });
   };
 
   return (
@@ -27,7 +35,12 @@ const GearPage = ({ account, gears }: Props) => {
 
       <p className={styles.description}>Hello, {account.firstname}.</p>
 
-      <div className={styles.options}>[EMAIL]</div>
+      <div className={styles.options}>
+        We need your email to send you notifications:
+        <div>
+          <EmailField initialValue={account.email} onChange={saveEmail} />
+        </div>
+      </div>
 
       <div className={styles.grid}>
         {gears.map((gear) => (
