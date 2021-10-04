@@ -17,7 +17,7 @@ const GearPage = ({ account, gears }: Props) => {
   return (
     <div className={styles.container}>
       <Head>
-        <title>Create Next App</title>
+        <title>Gear Alert</title>
         <meta
           name="description"
           content="Get a notification to maintain your gear"
