@@ -9,3 +9,7 @@
   padding: 4px;
   margin-top: 10px;
 }
+
+.invalid {
+  border: 3px solid #d51111;
+}
