@@ -11,8 +11,7 @@ export interface GearRecord {
   lastChainAt?: number;
   lastTiresAt?: number;
   lastBrakePadsAt?: number;
-  lastBrakeCablesAt?: number;
-  lastGearCablesAt?: number;
+  lastCablesAt?: number;
 }
 
 class Gear {
