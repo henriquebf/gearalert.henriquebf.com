@@ -121,14 +121,31 @@
   }
 }
 
+.field {
+  width: 50px;
+}
+
 .statusOk {
   color: #074d07;
+  cursor: pointer;
+  line-height: 25px;
+  width: 100%;
 }
 
 .statusWarn {
   color: #b67607;
+  cursor: pointer;
+  line-height: 25px;
+  width: 100%;
 }
 
 .statusDue {
   color: #d51111;
+  cursor: pointer;
+  line-height: 25px;
+  width: 100%;
+}
+
+.hover {
+  text-decoration: underline;
 }

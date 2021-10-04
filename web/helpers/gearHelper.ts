@@ -21,34 +21,37 @@ export const generateGearFromAthlete = (
 
 const maintenanceItems = [
   {
-    key: 'lastChainAt',
+    property: 'lastChainAt',
     label: 'Chain',
     lifeDistance: 5000000,
   },
   {
-    key: 'lastTiresAt',
+    property: 'lastTiresAt',
     label: 'Tires',
     lifeDistance: 5000000,
   },
   {
-    key: 'lastBrakePadsAt',
+    property: 'lastBrakePadsAt',
     label: 'Brake Pads',
     lifeDistance: 15000000,
   },
   {
-    key: 'lastCablesAt',
-    label: 'Cables and Fluids',
+    property: 'lastCablesAt',
+    label: 'Cables/Fluids',
     lifeDistance: 10000000,
   },
 ];
 
 export const populateMaintenanceItems = (gear: GearRecord) => {
   return maintenanceItems.map((i) => {
-    let lastMaintenanceAt = gear[i.key as keyof GearRecord];
+    let lastMaintenanceAt = gear[i.property as keyof GearRecord];
     if (typeof lastMaintenanceAt !== 'number') {
       lastMaintenanceAt = 0;
     }
     return {
+      gearId: gear.id,
+      accountId: gear.accountId,
+      property: i.property,
       label: i.label,
       dueDistance: i.lifeDistance - (gear.distance - lastMaintenanceAt),
       lastMaintenanceAt,

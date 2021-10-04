@@ -1,5 +1,5 @@
 import Head from 'next/head';
-import Image from 'next/image';
+import { useRouter } from 'next/router';
 import styles from '@/styles/Home.module.css';
 import withSession, { ServerSideHandler } from '@/lib/session';
 import Account, { AccountRecord } from '@/models/Account';
@@ -9,6 +9,11 @@ import GearItem from '@/components/GearItem';
 type Props = { account: AccountRecord; gears: GearRecord[] };
 
 const GearPage = ({ account, gears }: Props) => {
+  const router = useRouter();
+  const refreshData = () => {
+    router.replace(router.asPath);
+  };
+
   return (
     <div className={styles.container}>
       <Head>
@@ -25,7 +30,7 @@ const GearPage = ({ account, gears }: Props) => {
       <div className={styles.grid}>
         {gears.map((gear) => (
           <div key={gear.id} className={styles.card}>
-            <GearItem gear={gear} />
+            <GearItem gear={gear} onDataChanged={refreshData} />
           </div>
         ))}
       </div>
