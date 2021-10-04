@@ -10,6 +10,8 @@ Connect your strava account and keep track of the maintenance of your bike parts
 -   [Production link](https://gearalert.henriquebf.com)
 -   [Hosting](https://vercel.com/yourtempo/gearalert)
 
+![Screenshot 2021-10-04 at 22 22 55](https://user-images.githubusercontent.com/1222058/135919581-65190370-d3ee-48f2-86be-d32f69691e88.png)
+
 ## General
 
 -   [Strava Settings](https://www.strava.com/settings/api)
