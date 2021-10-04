@@ -18,7 +18,7 @@ class Gear {
   _collection: string = 'gears';
 
   async find(filter: Partial<GearRecord>): Promise<GearRecord[]> {
-    return find(this._collection, filter);
+    return find(this._collection, filter, { distance: -1 });
   }
 
   async findOne(filter: Partial<GearRecord>): Promise<GearRecord> {

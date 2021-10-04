@@ -25,7 +25,7 @@ const GearPage = ({ account, gears }: Props) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <p className={styles.description}>Hello {account.firstname}</p>
+      <p className={styles.description}>Hello, {account.firstname}.</p>
 
       <div className={styles.grid}>
         {gears.map((gear) => (

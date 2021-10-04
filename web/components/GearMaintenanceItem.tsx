@@ -1,7 +1,9 @@
 import { useState } from 'react';
 import axios from 'axios';
+import classNames from 'classnames';
 import styles from '@/styles/Home.module.css';
 import useHover from '@/hooks/useHover';
+import SaveButton from '@/components/buttons/SaveButton';
 
 type Props = {
   gearId: string;
@@ -21,12 +23,12 @@ const GearMaintenanceItem = ({
   onDataChanged,
 }: Props) => {
   const dueDistanceInKm = Math.floor(dueDistance / 1000);
-  const status =
+  const statusStyle =
     dueDistanceInKm > 500
-      ? styles.statusOk
+      ? styles.ok
       : dueDistanceInKm > 0
-      ? styles.statusWarn
-      : styles.statusDue;
+      ? styles.warn
+      : styles.overdue;
 
   const [isHovered, eventHandlers] = useHover();
   const [isEditing, setEditing] = useState(false);
@@ -58,39 +60,41 @@ const GearMaintenanceItem = ({
     }
   };
 
-  return (
-    <span className={status} {...eventHandlers}>
-      {isEditing ? (
-        <span>
-          {label} changed at{' '}
-          <input
-            type="text"
-            defaultValue={fieldValue}
-            className={styles.field}
-            onChange={(e) => onChange(e.target.value)}
-          />{' '}
-          km{' '}
-          {isSaving ? (
-            <span>
-              <b>(saving...)</b>
-            </span>
-          ) : (
-            <span onClick={onSave}>
-              <b>(set)</b>
-            </span>
-          )}
-        </span>
-      ) : (
-        <span
-          className={isHovered ? styles.hover : undefined}
-          onClick={onClick}
-        >
-          {label} {dueDistanceInKm < 0 ? 'was' : 'is'} due at {dueDistanceInKm}{' '}
-          km
-        </span>
-      )}
-      <br />
+  const textInput = (
+    <input
+      type="text"
+      defaultValue={fieldValue}
+      className={styles.field}
+      autoFocus
+      onChange={(e) => onChange(e.target.value)}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter') onSave();
+      }}
+    />
+  );
+
+  const editing = (
+    <span>
+      {label} was replaced at km {textInput}
+      <SaveButton isSaving={isSaving} onSave={onSave} />
     </span>
+  );
+
+  const listing = (
+    <span className={isHovered ? styles.hover : undefined} onClick={onClick}>
+      {dueDistanceInKm < 0
+        ? `${label} was due for ${Math.abs(dueDistanceInKm)} km`
+        : `${label} will be due in ${dueDistanceInKm} km`}
+    </span>
+  );
+
+  return (
+    <div
+      className={classNames([styles.status, statusStyle])}
+      {...eventHandlers}
+    >
+      {isEditing ? editing : listing}
+    </div>
   );
 };
 
