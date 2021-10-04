@@ -17,6 +17,7 @@
     "paths": {
       "@/lib/*": ["lib/*"],
       "@/styles/*": ["styles/*"],
+      "@/components/*": ["components/*"],
       "@/hooks/*": ["hooks/*"],
       "@/models/*": ["models/*"],
       "@/services/*": ["services/*"],
