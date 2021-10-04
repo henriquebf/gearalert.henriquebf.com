@@ -1,4 +1,5 @@
 import styles from '@/styles/Home.module.css';
+import Image from 'next/image';
 import stravaSettings from '@/services/strava/settings.json';
 
 type Props = {};
@@ -6,13 +7,18 @@ type Props = {};
 const ConnectWithStrava = ({}: Props) => {
   const envStravaSettings = stravaSettings[process.env.NODE_ENV];
   return (
-    <div className={styles.card}>
+    <>
       <a
         href={`http://www.strava.com/oauth/authorize?client_id=${envStravaSettings.clientId}&response_type=code&redirect_uri=${envStravaSettings.redirect_uri}&approval_prompt=force&scope=${envStravaSettings.scope}`}
       >
-        Connect with strava
+        <Image
+          src="/connect-with-strava.svg"
+          alt="Strava Button"
+          width={193}
+          height={48}
+        />
       </a>
-    </div>
+    </>
   );
 };
 
