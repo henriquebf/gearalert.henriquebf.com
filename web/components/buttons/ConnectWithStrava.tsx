@@ -1,4 +1,3 @@
-import styles from '@/styles/Home.module.css';
 import Image from 'next/image';
 import stravaSettings from '@/services/strava/settings.json';
 
