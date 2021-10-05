@@ -79,10 +79,10 @@ const executeNotifications = async (account: AccountRecord) => {
   if (overdueGear.length === 0) return;
 
   // Generate email content
-  const content = generateNotificationContent(overdueGear);
+  const postmarkList = generateNotificationContent(overdueGear);
 
   // Send email
-  await postWithTemplate(account.email, content);
+  await postWithTemplate(account.email, postmarkList);
 
   // Acknowlege notification
   const updatedGear = gears.map((gear) => ({

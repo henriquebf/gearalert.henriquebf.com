@@ -2,7 +2,6 @@ import { GearRecord } from '@/models/Gear';
 import { populateMaintenanceItems } from '@/helpers/gearHelper';
 
 // Filter a list of gear, all that maintenance is overdue
-
 export const filterOverdueGear = (gears: GearRecord[]): GearRecord[] => {
   return gears
     .filter((gear) => gear.isNotificationEnabled)
@@ -17,7 +16,14 @@ export const filterOverdueGear = (gears: GearRecord[]): GearRecord[] => {
 };
 
 // Generate content for notification email
-export const generateNotificationContent = (gears: GearRecord[]): string => {
+export type PostmarkItem = {
+  name: string;
+  description: string;
+};
+
+export const generateNotificationContent = (
+  gears: GearRecord[]
+): PostmarkItem[] => {
   // Prepare data for email template
   const preContent = gears.map((gear) => {
     const itemsToNotify = populateMaintenanceItems(gear)
@@ -33,17 +39,19 @@ export const generateNotificationContent = (gears: GearRecord[]): string => {
   });
 
   // Generate template
-  return preContent
-    .map((p) => {
-      const itemListStr = p.itemsToNotify
-        .map(
-          (i) =>
-            `${i.itemName} is due for ${Math.abs(
-              Math.floor(i.dueDistance / 1000)
-            )} km`
-        )
-        .join('<br />');
-      return `${p.gearName}:<br />${itemListStr}`;
-    })
-    .join('<br /><br />');
+  const postmarkList = preContent.map((p) => {
+    const itemListStr = p.itemsToNotify.map(
+      (i) =>
+        `${i.itemName} is due for ${Math.abs(
+          Math.floor(i.dueDistance / 1000)
+        )} km`
+    );
+
+    return {
+      name: p.gearName,
+      description: itemListStr.join(','),
+    };
+  });
+
+  return postmarkList;
 };
