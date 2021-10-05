@@ -1,6 +1,10 @@
 import axios from 'axios';
+import { PostmarkItem } from '@/helpers/emailHelper';
 
-const postWithTemplate = async (to: string, content: string): Promise<void> => {
+const postWithTemplate = async (
+  to: string,
+  content: PostmarkItem[]
+): Promise<void> => {
   if (!process.env.POSTMARK_SECRET) {
     throw new Error(`postWithTemplate: POSTMARK_SECRET not defined!`);
   }

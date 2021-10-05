@@ -5,11 +5,10 @@ import getAthlete from '@/services/strava/getAthlete';
 import Account, { AccountRecord } from '@/models/Account';
 import Gear from '@/models/Gear';
 import postWithTemplate from '@/services/postmark/postTemplate';
-import {
-  generateGearFromAthlete,
-  populateMaintenanceItems,
-} from '@/helpers/gearHelper';
+import { generateGearFromAthlete } from '@/helpers/gearHelper';
 import { validateEmailAddress } from '@/helpers/stringHelper';
+import { filterOverdueGear } from '@/helpers/emailHelper';
+import { generateNotificationContent } from '@/helpers/emailHelper';
 
 type Data =
   | {}
@@ -74,50 +73,16 @@ const executeNotifications = async (account: AccountRecord) => {
 
   // Find gear that requires notification
   const gears = await Gear.find({ accountId: account.id });
-  const overdueGear = gears
-    .filter((gear) => gear.isNotificationEnabled)
-    .filter(
-      (gear) =>
-        populateMaintenanceItems(gear).filter(
-          (m) =>
-            m.dueDistance < 0 && // maintenance item is overdue
-            gear.distance !== gear.distanceLastNotification // not yet notified
-        ).length
-    );
 
+  // Separate gear items with overdue maintenance
+  const overdueGear = filterOverdueGear(gears);
   if (overdueGear.length === 0) return;
 
-  // Prepare data for email template
-  const preContent = overdueGear.map((gear) => {
-    const itemsToNotify = populateMaintenanceItems(gear)
-      .map((i) => ({
-        itemName: i.label,
-        dueDistance: i.dueDistance,
-      }))
-      .filter((i) => i.dueDistance < 0);
-    return {
-      gearName: gear.name,
-      itemsToNotify,
-    };
-  });
-
-  // Generate template
-  const content = preContent
-    .map((p) => {
-      const itemListStr = p.itemsToNotify
-        .map(
-          (i) =>
-            `${i.itemName} is due for ${Math.abs(
-              Math.floor(i.dueDistance / 1000)
-            )} km`
-        )
-        .join('<br />');
-      return `${p.gearName}:<br />${itemListStr}`;
-    })
-    .join('<br /><br />');
+  // Generate email content
+  const postmarkList = generateNotificationContent(overdueGear);
 
   // Send email
-  await postWithTemplate(account.email, content);
+  await postWithTemplate(account.email, postmarkList);
 
   // Acknowlege notification
   const updatedGear = gears.map((gear) => ({
