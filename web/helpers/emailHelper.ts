@@ -1,10 +1,25 @@
 import { GearRecord } from '@/models/Gear';
 import { populateMaintenanceItems } from '@/helpers/gearHelper';
 
+// Filter a list of gear, all that maintenance is overdue
+
+export const filterOverdueGear = (gears: GearRecord[]): GearRecord[] => {
+  return gears
+    .filter((gear) => gear.isNotificationEnabled)
+    .filter(
+      (gear) =>
+        populateMaintenanceItems(gear).filter(
+          (m) =>
+            m.dueDistance < 0 && // maintenance item is overdue
+            gear.distance !== gear.distanceLastNotification // not yet notified
+        ).length
+    );
+};
+
 // Generate content for notification email
-export const generateNotificationContent = (gear: GearRecord[]): string => {
+export const generateNotificationContent = (gears: GearRecord[]): string => {
   // Prepare data for email template
-  const preContent = gear.map((gear) => {
+  const preContent = gears.map((gear) => {
     const itemsToNotify = populateMaintenanceItems(gear)
       .map((i) => ({
         itemName: i.label,
@@ -18,7 +33,7 @@ export const generateNotificationContent = (gear: GearRecord[]): string => {
   });
 
   // Generate template
-  const content = preContent
+  return preContent
     .map((p) => {
       const itemListStr = p.itemsToNotify
         .map(
@@ -31,6 +46,4 @@ export const generateNotificationContent = (gear: GearRecord[]): string => {
       return `${p.gearName}:<br />${itemListStr}`;
     })
     .join('<br /><br />');
-
-  return content;
 };

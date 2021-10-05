@@ -5,11 +5,9 @@ import getAthlete from '@/services/strava/getAthlete';
 import Account, { AccountRecord } from '@/models/Account';
 import Gear from '@/models/Gear';
 import postWithTemplate from '@/services/postmark/postTemplate';
-import {
-  generateGearFromAthlete,
-  populateMaintenanceItems,
-} from '@/helpers/gearHelper';
+import { generateGearFromAthlete } from '@/helpers/gearHelper';
 import { validateEmailAddress } from '@/helpers/stringHelper';
+import { filterOverdueGear } from '@/helpers/emailHelper';
 import { generateNotificationContent } from '@/helpers/emailHelper';
 
 type Data =
@@ -75,19 +73,12 @@ const executeNotifications = async (account: AccountRecord) => {
 
   // Find gear that requires notification
   const gears = await Gear.find({ accountId: account.id });
-  const overdueGear = gears
-    .filter((gear) => gear.isNotificationEnabled)
-    .filter(
-      (gear) =>
-        populateMaintenanceItems(gear).filter(
-          (m) =>
-            m.dueDistance < 0 && // maintenance item is overdue
-            gear.distance !== gear.distanceLastNotification // not yet notified
-        ).length
-    );
 
+  // Separate gear items with overdue maintenance
+  const overdueGear = filterOverdueGear(gears);
   if (overdueGear.length === 0) return;
 
+  // Generate email content
   const content = generateNotificationContent(overdueGear);
 
   // Send email
