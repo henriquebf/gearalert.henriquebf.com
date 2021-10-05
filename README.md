@@ -3,6 +3,7 @@
 Connect your strava account and keep track of the maintenance of your bike parts:
 -   You can check and update your maintenance data via the [web app](https://vercel.com/yourtempo/gearalert).
 -   Whenever you finish a ride with a bike that requires maintenance, you will receive an email informing which bike, which part and the distance since the maintenance is due for it.
+- **Please check this [following presentation](https://app.pitch.com/app/presentation/26b36fff-89bb-47f9-b039-8ca54f5c1b3d/439e0394-e3e1-40b7-b8ce-b9c64b35eae7) to get a better description and the flow of the app.**
 
 ## Web App
 
