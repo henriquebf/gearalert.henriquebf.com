@@ -10,6 +10,7 @@ import {
   populateMaintenanceItems,
 } from '@/helpers/gearHelper';
 import { validateEmailAddress } from '@/helpers/stringHelper';
+import { generateNotificationContent } from '@/helpers/emailHelper';
 
 type Data =
   | {}
@@ -87,34 +88,7 @@ const executeNotifications = async (account: AccountRecord) => {
 
   if (overdueGear.length === 0) return;
 
-  // Prepare data for email template
-  const preContent = overdueGear.map((gear) => {
-    const itemsToNotify = populateMaintenanceItems(gear)
-      .map((i) => ({
-        itemName: i.label,
-        dueDistance: i.dueDistance,
-      }))
-      .filter((i) => i.dueDistance < 0);
-    return {
-      gearName: gear.name,
-      itemsToNotify,
-    };
-  });
-
-  // Generate template
-  const content = preContent
-    .map((p) => {
-      const itemListStr = p.itemsToNotify
-        .map(
-          (i) =>
-            `${i.itemName} is due for ${Math.abs(
-              Math.floor(i.dueDistance / 1000)
-            )} km`
-        )
-        .join('<br />');
-      return `${p.gearName}:<br />${itemListStr}`;
-    })
-    .join('<br /><br />');
+  const content = generateNotificationContent(overdueGear);
 
   // Send email
   await postWithTemplate(account.email, content);
