@@ -1,12 +1,12 @@
 // Next.js API route support: https://nextjs.org/docs/api-routes/introduction
-import withSession from '@/lib/session';
+import { withSessionRoute } from '@/lib/session';
 import Account from '@/models/Account';
 import Gear from '@/models/Gear';
 import postOAuthToken from 'services/strava/postOAuthToken';
 import getAthlete from '@/services/strava/getAthlete';
 import { generateGearFromAthlete } from '@/helpers/gearHelper';
 
-export default withSession(async (req, res) => {
+export default withSessionRoute(async (req, res) => {
   try {
     if (typeof req.query?.code !== 'string') {
       throw new Error('oauth: code not provided!');
@@ -56,7 +56,7 @@ export default withSession(async (req, res) => {
     await Gear.removeByNotIds(gearIds);
 
     // Save session
-    req.session.set('accountId', account.id);
+    req.session.accountId = account.id;
     await req.session.save();
 
     res.redirect('/gear');

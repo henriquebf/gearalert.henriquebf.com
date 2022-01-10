@@ -1,41 +1,42 @@
-// Ref: https://github.com/vvo/next-iron-session
 // this file is a wrapper with defaults to be used in both API routes and `getServerSideProps` functions
+// see: https://github.com/vvo/iron-session
 import {
-  GetServerSideProps,
   GetServerSidePropsContext,
-  NextApiRequest,
-  NextApiResponse,
+  GetServerSidePropsResult,
+  NextApiHandler,
 } from 'next';
-import { Session, withIronSession } from 'next-iron-session';
+import { withIronSessionApiRoute, withIronSessionSsr } from 'iron-session/next';
 
-// optionally add stronger typing for next-specific implementation
-type NextIronRequest = NextApiRequest & { session: Session };
-type ServerSideContext = GetServerSidePropsContext & {
-  req: NextIronRequest;
+const sessionOptions = {
+  password: process.env.SESSION_SECRET || '',
+  cookieName: 'gearalert',
+  cookieOptions: {
+    secure: process.env.NODE_ENV === 'production',
+  },
 };
-
-export type ApiHandler = (
-  req: NextIronRequest,
-  res: NextApiResponse
-) => void | Promise<void> | Promise<any>;
-
-export type ServerSideHandler = (
-  context: ServerSideContext
-) => ReturnType<GetServerSideProps>;
 
 if (!process.env.SESSION_SECRET) {
   throw new Error('session: SESSION_SECRET not provided!');
 }
 
-const withSession = <T extends ApiHandler | ServerSideHandler>(handler: T) =>
-  withIronSession(handler, {
-    password: process.env.SESSION_SECRET || '',
-    cookieName: 'gearalert',
-    cookieOptions: {
-      // the next line allows to use the session in non-https environments like
-      // Next.js dev mode (http://localhost:3000)
-      secure: process.env.NODE_ENV === 'production',
-    },
-  });
+export function withSessionRoute(handler: NextApiHandler) {
+  return withIronSessionApiRoute(handler, sessionOptions);
+}
 
-export default withSession;
+// Theses types are compatible with InferGetStaticPropsType https://nextjs.org/docs/basic-features/data-fetching#typescript-use-getstaticprops
+export function withSessionSsr<
+  P extends { [key: string]: unknown } = { [key: string]: unknown }
+>(
+  handler: (
+    context: GetServerSidePropsContext
+  ) => GetServerSidePropsResult<P> | Promise<GetServerSidePropsResult<P>>
+) {
+  return withIronSessionSsr(handler, sessionOptions);
+}
+
+// This is where we specify the typings of req.session.*
+declare module 'iron-session' {
+  interface IronSessionData {
+    accountId?: string;
+  }
+}
