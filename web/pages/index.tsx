@@ -1,7 +1,7 @@
 import type { NextPage } from 'next';
 import Head from 'next/head';
 import styles from '@/styles/Home.module.css';
-import withSession, { ServerSideHandler } from '@/lib/session';
+import { withSessionSsr } from '@/lib/session';
 import Account from '@/models/Account';
 import ConnectWithStrava from '@/components/buttons/ConnectWithStrava';
 
@@ -32,20 +32,21 @@ const IndexPage: NextPage = () => {
   );
 };
 
-export const getServerSideProps = withSession<ServerSideHandler>(
-  async function ({ req, res }) {
-    const account = await Account.findOne({ id: req.session.get('accountId') });
-    if (account) {
-      res.setHeader('location', '/gear');
-      res.statusCode = 302;
-      res.end();
-      return { props: { account } };
-    }
-
-    return {
-      props: {},
-    };
+export const getServerSideProps = withSessionSsr(async function ({
+  req,
+  res,
+}): Promise<{ props: any }> {
+  const account = await Account.findOne({ id: req.session.accountId });
+  if (account) {
+    res.setHeader('location', '/gear');
+    res.statusCode = 302;
+    res.end();
+    return { props: { account } };
   }
-);
+
+  return {
+    props: {},
+  };
+});
 
 export default IndexPage;

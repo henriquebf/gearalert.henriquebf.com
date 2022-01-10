@@ -2,7 +2,7 @@ import Head from 'next/head';
 import { useRouter } from 'next/router';
 import axios from 'axios';
 import styles from '@/styles/Home.module.css';
-import withSession, { ServerSideHandler } from '@/lib/session';
+import { withSessionSsr } from '@/lib/session';
 import Account, { AccountRecord } from '@/models/Account';
 import Gear, { GearRecord } from '@/models/Gear';
 import GearItem from '@/components/GearItem';
@@ -57,22 +57,23 @@ const GearPage = ({ account, gears }: Props) => {
   );
 };
 
-export const getServerSideProps = withSession<ServerSideHandler>(
-  async function ({ req, res }) {
-    const account = await Account.findOne({ id: req.session.get('accountId') });
-    if (!account) {
-      res.setHeader('location', '/');
-      res.statusCode = 302;
-      res.end();
-      return { props: {} };
-    }
-
-    const gears = await Gear.find({ accountId: account.id });
-
-    return {
-      props: { account, gears },
-    };
+export const getServerSideProps = withSessionSsr(async function ({
+  req,
+  res,
+}): Promise<{ props: any }> {
+  const account = await Account.findOne({ id: req.session.accountId });
+  if (!account) {
+    res.setHeader('location', '/');
+    res.statusCode = 302;
+    res.end();
+    return { props: {} };
   }
-);
+
+  const gears = await Gear.find({ accountId: account.id });
+
+  return {
+    props: { account, gears },
+  };
+});
 
 export default GearPage;
