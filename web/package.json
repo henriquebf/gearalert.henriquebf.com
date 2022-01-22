@@ -10,19 +10,18 @@
   },
   "dependencies": {
     "axios": "^0.24.0",
-    "classnames": "^2.3.1",
     "iron-session": "^6.0.5",
     "mongodb": "^4.3.0",
-    "next": "^12.0.7",
+    "next": "12.0.7",
     "react": "17.0.2",
     "react-dom": "17.0.2",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "@types/react": "17.0.26",
-    "@types/uuid": "^8.3.1",
+    "@types/react": "17.0.36",
+    "@types/uuid": "^8.3.4",
     "eslint": "7.32.0",
-    "eslint-config-next": "11.1.2",
-    "typescript": "4.4.3"
+    "eslint-config-next": "12.0.4",
+    "typescript": "4.5.2"
   }
 }
