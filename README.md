@@ -7,13 +7,12 @@ Connect your strava account and keep track of the maintenance of your bike parts
 
 ## Web App
 
--   [Documentation](https://github.com/henriquebf/gearalert/tree/main/web)
--   [Production link](https://gearalert.henriquebf.com)
--   [Hosting](https://vercel.com/yourtempo/gearalert)
+-   [Try it live!](https://gearalert.henriquebf.com)
+-   [Source code & Dev documentation](https://github.com/henriquebf/gearalert/tree/main/web)
 
 ![Screenshot 2021-10-04 at 22 22 55](https://user-images.githubusercontent.com/1222058/135919581-65190370-d3ee-48f2-86be-d32f69691e88.png)
 
-## General
+## Reference
 
 -   [Strava Settings](https://www.strava.com/settings/api)
 -   [Strava API Reference](https://developers.strava.com/docs/reference/)
