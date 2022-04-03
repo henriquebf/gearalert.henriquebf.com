@@ -1,4 +1,5 @@
 import axios from 'axios';
+import styles from '@/styles/Home.module.css';
 import GearMaintenanceItem from '@/components/GearMaintenanceItem';
 import { GearRecord } from '@/models/Gear';
 import Toggle from '@/components/form/Toggle';
@@ -19,9 +20,9 @@ const GearItem = ({ gear, refreshData }: Props) => {
 
   return (
     <>
-      <div className={'info'}>
+      <div className={styles.info}>
         <b>{gear.name}</b> - {distanceInKm} km
-        <div className={'distance'}>
+        <div className={styles.distance}>
           <Toggle
             initialState={gear.isNotificationEnabled === true}
             onChanged={onToggleChange}
@@ -40,16 +41,6 @@ const GearItem = ({ gear, refreshData }: Props) => {
           refreshData={refreshData}
         />
       ))}
-
-      <style jsx>{`
-        .info {
-          padding-bottom: 15px;
-        }
-
-        .distance {
-          float: right;
-        }
-      `}</style>
     </>
   );
 };
