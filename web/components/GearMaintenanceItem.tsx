@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import axios from 'axios';
-import classNames from 'classnames';
 import styles from '@/styles/Home.module.css';
 import useHover from '@/hooks/useHover';
+import { classNames } from '@/helpers/utilsHelper';
 import SaveButton from '@/components/buttons/SaveButton';
 
 type Props = {

@@ -1,13 +1,13 @@
-import withSession from '@/lib/session';
+import { withSessionRoute } from '@/lib/session';
 import Account from '@/models/Account';
 
-export default withSession(async (req, res) => {
+export default withSessionRoute(async (req, res) => {
   if (typeof req.body?.value !== 'string') {
     // Invalid request
     return res.status(400).json({});
   }
 
-  const accountId = req.session.get('accountId');
+  const accountId = req.session.accountId;
   const account = await Account.findOne({ id: accountId });
   if (!account) {
     // Unauthorized

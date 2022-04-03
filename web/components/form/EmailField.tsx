@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import classNames from 'classnames';
+import { classNames } from '@/helpers/utilsHelper';
 import styles from '@/styles/FormField.module.css';
 import { validateEmailAddress } from '@/helpers/stringHelper';
 

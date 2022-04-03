@@ -1,5 +1,9 @@
 # Web App
 
+## Requirements
+
+- Node v16.13.0+
+
 ## Getting Started
 
 Bootstrap Environment settings:

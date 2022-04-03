@@ -1,8 +1,8 @@
-import withSession from '@/lib/session';
+import { withSessionRoute } from '@/lib/session';
 import Account from '@/models/Account';
 import Gear from '@/models/Gear';
 
-export default withSession(async (req, res) => {
+export default withSessionRoute(async (req, res) => {
   if (
     typeof req.body?.gearId !== 'string' ||
     typeof req.body?.value !== 'boolean'
@@ -11,7 +11,7 @@ export default withSession(async (req, res) => {
     return res.status(400).json({});
   }
 
-  const accountId = req.session.get('accountId');
+  const accountId = req.session.accountId;
   const account = await Account.findOne({ id: accountId });
   if (!account) {
     // Unauthorized

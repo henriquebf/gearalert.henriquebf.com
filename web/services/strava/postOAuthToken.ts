@@ -1,4 +1,5 @@
 import axios from 'axios';
+import settings from './settings.json';
 
 type AthleteData = {
   id: number;
@@ -40,7 +41,7 @@ const postOAuthToken = async (
   }
 
   const body: Body = {
-    client_id: '71939',
+    client_id: settings[process.env.NODE_ENV].clientId,
     client_secret: process.env.STRAVA_CLIENT_SECRET,
     grant_type: grantType,
   };
