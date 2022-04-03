@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import axios from 'axios';
-import styles from '@/styles/Home.module.css';
 import useHover from '@/hooks/useHover';
 import { classNames } from '@/helpers/utilsHelper';
 import SaveButton from '@/components/buttons/SaveButton';
@@ -31,11 +30,7 @@ const GearMaintenanceItem = ({
 
   const dueDistanceInKm = Math.floor(dueDistance / 1000);
   const statusStyle =
-    dueDistanceInKm > 500
-      ? styles.ok
-      : dueDistanceInKm > 0
-      ? styles.warn
-      : styles.overdue;
+    dueDistanceInKm > 500 ? 'ok' : dueDistanceInKm > 0 ? 'warn' : 'overdue';
 
   const onClick = () => {
     setEditing(true);
@@ -62,7 +57,7 @@ const GearMaintenanceItem = ({
     <input
       type="text"
       defaultValue={fieldValue}
-      className={styles.field}
+      className={'field'}
       autoFocus
       onChange={(e) => onChange(e.target.value)}
       onKeyDown={(e) => {
@@ -79,7 +74,7 @@ const GearMaintenanceItem = ({
   );
 
   const listing = (
-    <span className={isHovered ? styles.hover : undefined} onClick={onClick}>
+    <span className={isHovered ? 'hover' : undefined} onClick={onClick}>
       {dueDistanceInKm < 0
         ? `${label} was due for ${Math.abs(dueDistanceInKm)} km`
         : `${label} will be due in ${dueDistanceInKm} km`}
@@ -87,12 +82,48 @@ const GearMaintenanceItem = ({
   );
 
   return (
-    <div
-      className={classNames([styles.status, statusStyle])}
-      {...eventHandlers}
-    >
-      {isEditing ? editing : listing}
-    </div>
+    <>
+      <div className={classNames(['status', statusStyle])} {...eventHandlers}>
+        {isEditing ? editing : listing}
+      </div>
+
+      <style jsx>{`
+        .ok {
+          cursor: pointer;
+          color: #074d07;
+        }
+
+        .warn {
+          cursor: pointer;
+          color: #b67607;
+        }
+
+        .overdue {
+          cursor: pointer;
+          color: #d51111;
+        }
+
+        .field {
+          width: 75px;
+          border: none;
+          border-radius: 5px;
+          background-color: #eaeaea;
+          font-size: 10px;
+          text-align: center;
+          text-decoration: none;
+          padding: 2px;
+        }
+
+        .hover {
+          text-decoration: underline;
+        }
+
+        .status {
+          width: 100%;
+          line-height: 1.6;
+        }
+      `}</style>
+    </>
   );
 };
 
