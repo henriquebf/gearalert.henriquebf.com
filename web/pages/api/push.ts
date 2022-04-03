@@ -54,9 +54,7 @@ export default async function handler(
     // Update Gear data
     const athlete = await getAthlete(account.stravaAccessToken);
     const gears = generateGearFromAthlete(account.id, 'bikes', athlete.bikes);
-    const gearIds = gears.map((gear) => gear.id);
     await Gear.saveAll(gears);
-    await Gear.removeByNotIds(gearIds);
     console.log(`api/push: updated data for ${req.body.owner_id}.`);
 
     // Check/Send email notifications (async)
