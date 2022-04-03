@@ -51,9 +51,7 @@ export default withSessionRoute(async (req, res) => {
     // Update Gear data
     const athlete = await getAthlete(account.stravaAccessToken);
     const gears = generateGearFromAthlete(account.id, 'bikes', athlete.bikes);
-    const gearIds = gears.map((gear) => gear.id);
     await Gear.saveAll(gears);
-    await Gear.removeByNotIds(gearIds);
 
     // Save session
     req.session.accountId = account.id;
